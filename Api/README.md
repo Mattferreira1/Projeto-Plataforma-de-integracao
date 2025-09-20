@@ -1,0 +1,522 @@
+# Plataforma de Conexão entre Produtores do Mercado São Sebastião e Consumidores
+
+Esta API gerencia usuários, produtos e  envia pedidos via e-mail, 
+Os usuários podem ter os papéis (`role`) de **consumidor** ou **produtor**, e seus endereços são preenchidos automaticamente via integração com a API do [ViaCEP](https://viacep.com.br) para evitar erros de digitação.
+
+---
+# Avisos
+
+Todos os payloads necessários ja estarão disponíveis nas coleções do postman.
+
+Irei disponibilizar uma host online do render, para utilizar, basta trocar o valor da variável "URL" nas configurações da coleção postman. 
+
+obs: O Host do render pode gerar erros ou demora nos testes
+
+
+
+##  Rotas de Usuários
+
+
+<details>
+<summary>
+Listar usuários
+</summary>
+
+GET /users/listar
+
+
+**Descrição:** Retorna a lista de usuários cadastrados.  
+
+**Resposta (200):**
+```json
+[
+  {
+    "_id": "12345",
+    "nome": "João da Silva",
+    "email": "joao@email.com",
+    "telefone": "999999999",
+    "role": "consumidor",
+    "endereco": {
+      "rua": "Rua Exemplo",
+      "bairro": "Centro",
+      "cidade": "Fortaleza",
+      "estado": "CE",
+      "cep": "60000-000",
+      "numero": "123",
+      "complemento": "Apto 101"
+    }
+  }
+]
+```
+
+</details>
+
+
+<details>
+<summary>
+Buscar usuário por ID
+</summary>
+
+GET /users/buscar/:id
+
+**Descrição:** Retorna o usuário referente ao ID
+
+**Resposta (200):**
+```json
+{
+  "_id": "12345",
+  "nome": "Maria Souza",
+  "email": "maria@email.com",
+  "telefone": "888888888",
+  "role": "produtor",
+  "endereco": {
+    "rua": "Avenida Brasil",
+    "bairro": "Centro",
+    "cidade": "Rio de Janeiro",
+    "estado": "RJ",
+    "cep": "20000-000",
+    "numero": "456",
+    "complemento": "Casa"
+  }
+}
+```
+
+**Possíveis erros:**
+
+404 → Usuário não encontrado
+
+400 → ID não informado
+</details>
+
+
+
+<details>
+<summary>
+Criar usuário
+</summary>
+
+POST /users/criar
+
+
+**Descrição:** Cria um novo usuário no sistema. O endereço é preenchido automaticamente via ViaCEP.
+
+Campos obrigatórios no corpo da requisição (JSON):
+
+```json
+{
+  "nome": "Carlos Pereira",
+  "telefone": "777777777",
+  "cep": "01001-000",
+  "role": "consumidor",
+  "numeroDaCasa": "100",
+  "complemento": "Bloco B",
+  "email": "carlos@email.com"
+}
+```
+
+**Resposta (201):**
+```json
+{ 
+    "message": "Usuário criado com sucesso."
+}
+```
+
+**Erros possíveis:**
+
+400 → Campos obrigatórios faltando
+
+400 → Role inválida (deve ser consumidor ou produtor)
+
+404 → CEP não encontrado
+
+500 → Erro interno ao criar usuário
+
+</details>
+
+
+
+
+
+<details>
+<summary>
+Atualizar usuário
+</summary>
+
+
+PUT /users/atualizar/:id
+
+**Descrição:** Atualiza os dados de um usuário existente.
+
+Exemplo de corpo da requisição (JSON):
+```json
+{
+  "nome": "Carlos Almeida",
+  "telefone": "777777777",
+  "cep": "01001-000",
+  "role": "produtor",
+  "numeroDaCasa": "120",
+  "complemento": "Bloco C",
+  "email": "carlos.almeida@email.com"
+}
+```
+
+Resposta (200):
+
+```json
+{
+    "message": "Usuário atualizado com sucesso"
+}
+```
+
+**Erros possíveis:**
+
+400 → Campos obrigatórios faltando
+
+404 → Usuário não encontrado
+
+500 → Erro interno ao atualizar usuário
+</details>
+
+
+
+
+
+
+<details>
+<summary>
+Excluir usuário
+</summary>
+DELETE /users/apagar/:id
+
+
+**Descrição:** Remove um usuário do sistema.
+
+
+```json
+{ "message": "Usuário removido com sucesso" }
+```
+
+**Erros possíveis:**
+
+404 → Usuário não encontrado
+
+500 → Erro interno ao remover usuário
+
+</details>
+
+
+## Rotas para produtores
+
+<details>
+<summary>
+Listar todos os produtores
+</summary>
+Endpoint:
+
+get /users/produtores/listar
+
+**Descrição:**
+Retorna todos os usuários cadastrados com o papel (role) de produtor.
+
+**Resposta (200):**
+```json
+[
+  {
+    "_id": "66f18f31e01a9c1d2c5a5678",
+    "nome": "Maria Souza",
+    "email": "maria@email.com",
+    "telefone": "888888888",
+    "role": "produtor",
+    "endereco": {
+      "rua": "Avenida Brasil",
+      "bairro": "Centro",
+      "cidade": "Rio de Janeiro",
+      "estado": "RJ",
+      "cep": "20000-000",
+      "numero": "456",
+      "complemento": "Casa"
+    }
+  }
+]
+```
+
+**Erros possíveis:**
+
+500 → Erro interno ao listar produtores
+
+</details>
+
+
+
+<details>
+<summary>
+Buscar Produtor por ID
+</summary>
+
+Endpoint:
+
+GET /produtores/:id
+
+**Descrição:**
+
+Busca um produtor específico pelo ID e retorna também a lista de seus produtos.
+
+**Parâmetros de rota:**
+
+id → ID do produtor (obrigatório)
+
+Resposta (200):
+```json
+{
+  "produtor": {
+    "_id": "66f18f31e01a9c1d2c5a5678",
+    "nome": "Maria Souza",
+    "email": "maria@email.com",
+    "telefone": "888888888",
+    "role": "produtor",
+    "endereco": {
+      "rua": "Avenida Brasil",
+      "bairro": "Centro",
+      "cidade": "Rio de Janeiro",
+      "estado": "RJ",
+      "cep": "20000-000",
+      "numero": "456",
+      "complemento": "Casa"
+    }
+  },
+  "produtos": [
+    {
+      "_id": "77g29h41f02b0d2e3d6b9876",
+      "nome": "Feijão Carioca",
+      "preco": 10.5
+    },
+    {
+      "_id": "77g29h41f02b0d2e3d6b6543",
+      "nome": "Arroz Branco",
+      "preco": 8.0
+    }
+  ]
+}
+```
+**Erros possíveis:**
+
+400 → ID não informado
+
+404 → Produtor não encontrado
+
+500 → Erro interno ao buscar produtor
+
+</details>
+
+
+
+##  Rotas de produtos
+
+<details>
+<summary>
+Listar todos os produtos
+</summary>
+
+GET /produtos/
+
+**Descrição:**
+
+Lista todos os produtos cadastrados.
+
+Resposta (200):
+
+```json
+[
+  {
+    "_id": "66e73c8d123",
+    "nome": "Feijão",
+    "descricao": "Feijão carioca",
+    "preco": 10.5,
+    "quantidade": 20,
+    "unidade": "kg",
+    "produtor": {
+      "endereco": {
+          "numero": "22a",
+          "complemento": "apto",
+          "rua": "Rua a",
+          "bairro": "aldeota",
+          "cidade": "Fortaleza",
+          "estado": "CE",
+          "cep": "60502-32"
+      },
+      "_id": "68c840bc574ab30ea1270c8b",
+      "nome": "teste",
+      "telefone": "989898"
+  }
+  }
+]
+```
+**Erros possíveis:**
+
+500 → Erro interno ao listar produtos
+
+</details>
+
+
+<details>
+
+<summary>
+Listar produto por nome
+</summary>
+GET /produtos/nome
+
+**Descrição:**
+Busca produtos pelo nome (ignora maiúsculas/minúsculas e acentos).
+
+### Importante: o nome do produto precisa ser igual e com os acentos.
+
+**Body esperado:**
+
+```json
+{
+  "nome": "feijao"
+}
+```
+
+
+Resposta (200):
+
+```json
+[
+  {
+    "_id": "66e73c8d123",
+    "nome": "Feijão",
+    "descricao": "Feijão carioca",
+    "preco": 10.5,
+    "quantidade": 20,
+    "unidade": "kg",
+    "produtor": {
+      "_id": "66e73a1b456",
+      "nome": "João Silva",
+      "telefone": "1199999999",
+      "endereco": "Rua A, 123"
+    }
+  }
+]
+```
+
+**Erros possíveis:**
+
+500 → Erro interno
+
+500 → Nome do produto não informado
+
+</details>
+
+
+<details>
+<summary>
+Criar Produto
+</summary>
+
+POST /produtos/criar
+
+Cria um novo produto (somente se o usuário for um produtor).
+
+**Body esperado:**
+
+```json
+{
+  "nome": "Arroz",
+  "descricao": "Arroz branco tipo 1",
+  "preco": 25,
+  "quantidade": 50,
+  "unidade": "kg",
+  "IdProdutor": "66e73a1b456"
+}
+
+```
+
+
+**Respostas possíveis:**
+
+201 → Produto criado com sucesso.
+
+400 → Campos obrigatórios ausentes.
+
+404 → Produtor não encontrado.
+
+403 → Usuário não é produtor.
+
+500 → Erro interno.
+</details>
+
+
+<details>
+<summary>
+Atualizar produto
+</summary>
+
+PUT /produtos/atualizar/:id
+
+
+**descrição:**
+
+Atualiza um produto (somente se o produtor for o dono do produto).
+
+**Parâmetro de rota: id (ID do produto).**
+
+Body esperado (campos opcionais):
+
+```json
+{
+  "nome": "Arroz Integral",
+  "preco": 30,
+  "quantidade": 40,
+  "unidade": "kg",
+  "produtor": "66e73a1b456"
+}
+
+```
+
+**Respostas possíveis:**
+
+200 → Produto atualizado com sucesso.
+
+404 → Produto não encontrado ou sem permissão.
+
+500 → Erro interno.
+
+</details>
+
+
+
+<details>
+<summary>
+Deletar produto
+</summary>
+
+DELETE /produtos/excluir/:id
+
+Remove um produto pelo ID.
+
+Parâmetro de rota: id (ID do produto).
+
+Resposta (200):
+```json
+{ 
+  "message": "Produto removido com sucesso"
+}
+```
+
+
+**Erros possíveis:**
+
+404 → Produto não encontrado.
+
+500 → Erro interno.
+
+</details>
+
+
+<details>
+<summary>
+Gerar um pedido
+</summary>
+
+</details>
