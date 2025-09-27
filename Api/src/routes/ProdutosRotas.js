@@ -13,4 +13,6 @@ ProdutosRouter.put("/atualizar/:id",produtosController.updateProduto)
 
 ProdutosRouter.delete("/excluir/:id",produtosController.deletarProduto)
 
+ProdutosRouter.post("/pedido", produtosController.gerarPedido)
+
 module.exports = ProdutosRouter

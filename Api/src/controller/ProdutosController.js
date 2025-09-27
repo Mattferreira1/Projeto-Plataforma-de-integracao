@@ -36,7 +36,7 @@ class ProdutosController{
     
         await novoProduto.save();
     
-        res.status(201).json(novoProduto);
+        res.status(201).json({message: "Produto criado com sucesso."});
     
       } catch (error) {
         console.error("Erro ao criar produto:", error.message);
@@ -132,21 +132,60 @@ class ProdutosController{
         res.status(500).json({ message: "Erro interno ao atualizar produto" });
       }
     }
-    async gerarPedido(){
+    async gerarPedido(req, res){
+      try {
+        const { produtoId, quantidade, clienteId } = req.body;
 
-    resend.emails
-      .send({
-        from: "onboarding@resend.dev",
-        to: "matheus2100discord@gmail.com",
-        subject: "Hello World",
-        html: "<p>Congrats on sending your <strong>first email</strong>!</p>",
-      })
-      .then((data) => {
-        console.log("Email enviado ✅", data);
-      })
-      .catch((error) => {
-        console.error("Erro ❌", error);
-      });
+        if (!produtoId || !quantidade || !clienteId) {
+          return res.status(400).json({ message: "Dados incompletos." });
+        }
+
+        // Busca produto
+        const produto = await Product.findById(produtoId).populate("produtor");
+        if (!produto) {
+          return res.status(404).json({ message: "Produto não encontrado." });
+        }
+
+        // Busca cliente
+        const cliente = await User.findById(clienteId);
+        if (!cliente) {
+          return res.status(404).json({ message: "Cliente não encontrado." });
+        }
+
+        // Produtor do produto
+        const produtor = produto.produtor;
+        if (!produtor || !produtor.email) {
+          return res.status(400).json({ message: "Produtor inválido." });
+        }
+
+        // Envia email ao produtor
+        await resend.emails.send({
+          from: "onboarding@resend.dev",
+          to: produtor.email,
+          subject: "Novo pedido recebido!",
+          html: `
+            <p>Olá, ${produtor.nome}!</p>
+            <p>Você recebeu um novo pedido.</p>
+
+            <p><strong>Cliente</strong></p>
+            <p>${cliente.nome} (${cliente.email}) </p>
+            <p> Endereço: ${cliente.endereco.rua}, ${cliente.endereco.numero} ${cliente.endereco.complemento? cliente.endereco.complemento: "" }, ${cliente.endereco.bairro}, ${cliente.endereco.cidade}, ${cliente.endereco.estado} - ${cliente.endereco.cep} </p>
+            <p><strong>Produtos</strong></p>
+
+            <p>=================================</p>
+            <p><strong>Produto:</strong> ${produto.nome}</p>
+            <p><strong>Quantidade:</strong> ${quantidade} ${produto.unidade}</p>
+            <p>=================================</p>
+          `,
+        });
+
+        return res.status(200).json({
+          message: "Pedido realizado e e-mail enviado ao produtor!",
+        });
+      } catch (error) {
+        console.error("Erro ao processar pedido:", error);
+        return res.status(500).json({ message: "Erro ao processar pedido." });
+      }
     }
 }
 

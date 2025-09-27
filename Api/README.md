@@ -1,17 +1,54 @@
 # Plataforma de Conexão entre Produtores do Mercado São Sebastião e Consumidores
 
+Integrantes da equipe:
+
+```json
+    DAYANE DO NASCIMENTO PAULINO - 2326944 - Testes
+    ISMAEL GUSTAVO DA SILVA - 2326204 - Desenvolvimento
+    PAULO JONATHAN RIBEIRO LUZ - 2323859 - Documentação
+    STAYNER RODRIGUES DE LIMA - 2326190 - Documentação
+    MATHEUS FERREIRA SILVA ROCHA - 2326202 - Desenvolvimento
+```
+
+
 Esta API gerencia usuários, produtos e  envia pedidos via e-mail, 
-Os usuários podem ter os papéis (`role`) de **consumidor** ou **produtor**, e seus endereços são preenchidos automaticamente via integração com a API do [ViaCEP](https://viacep.com.br) para evitar erros de digitação.
+Os usuários podem ter os papéis (`role`) de **consumidor** ou **produtor**, e seus endereços são preenchidos automaticamente via integração com a API do [ViaCEP](https://viacep.com.br) para evitar erros de digitação e uma 
+
 
 ---
 # Avisos
 
 Todos os payloads necessários ja estarão disponíveis nas coleções do postman.
 
-Irei disponibilizar uma host online do render, para utilizar, basta trocar o valor da variável "URL" nas configurações da coleção postman. 
+Observações: 
 
-obs: O Host do render pode gerar erros ou demora nos testes
+- É necessário fazer 1 requisição qualquer antes dos testes devido ao mongoDB desativar o banco de dados após muito tempo inativo. 
 
+
+## Instalação
+
+1 -Digitar no git bash
+
+```json
+git clone https://github.com/Mattferreira1/Projeto-Plataforma-de-integracao.git
+```
+
+2 - Entre na pasta gerada e depois na pasta api
+
+3 - Abra o cmd na pasta api e digite:
+
+```json
+npm install
+```
+
+4 - Inicie a api com:
+
+```json
+npm run dev
+```
+
+
+## Testes
 
 
 ##  Rotas de Usuários
@@ -100,13 +137,13 @@ POST /users/criar
 
 **Descrição:** Cria um novo usuário no sistema. O endereço é preenchido automaticamente via ViaCEP.
 
-Campos obrigatórios no corpo da requisição (JSON):
+Payload:
 
 ```json
 {
   "nome": "Carlos Pereira",
   "telefone": "777777777",
-  "cep": "01001-000",
+  "cep": "01001000",
   "role": "consumidor",
   "numeroDaCasa": "100",
   "complemento": "Bloco B",
@@ -147,12 +184,12 @@ PUT /users/atualizar/:id
 
 **Descrição:** Atualiza os dados de um usuário existente.
 
-Exemplo de corpo da requisição (JSON):
+Payload:
 ```json
 {
   "nome": "Carlos Almeida",
   "telefone": "777777777",
-  "cep": "01001-000",
+  "cep": "01001000",
   "role": "produtor",
   "numeroDaCasa": "120",
   "complemento": "Bloco C",
@@ -269,21 +306,21 @@ Resposta (200):
 ```json
 {
   "produtor": {
-    "_id": "66f18f31e01a9c1d2c5a5678",
-    "nome": "Maria Souza",
-    "email": "maria@email.com",
-    "telefone": "888888888",
-    "role": "produtor",
-    "endereco": {
-      "rua": "Avenida Brasil",
-      "bairro": "Centro",
-      "cidade": "Rio de Janeiro",
-      "estado": "RJ",
-      "cep": "20000-000",
-      "numero": "456",
-      "complemento": "Casa"
-    }
-  },
+        "endereco": {
+            "numero": "22a",
+            "complemento": "apto",
+            "rua": "Rua Araçá",
+            "bairro": "Bonsucesso",
+            "cidade": "Fortaleza",
+            "estado": "CE",
+            "cep": "60545-380"
+        },
+        "_id": "68cf0c5616f159ed69c324a1",
+        "nome": "teste",
+        "telefone": "8599999",
+        "email": "tes2t@gmail.com",
+        "role": "produtor"
+    },
   "produtos": [
     {
       "_id": "77g29h41f02b0d2e3d6b9876",
@@ -368,13 +405,13 @@ GET /produtos/nome
 **Descrição:**
 Busca produtos pelo nome (ignora maiúsculas/minúsculas e acentos).
 
-### Importante: o nome do produto precisa ser igual e com os acentos.
+### Importante: o nome do produto precisa ser igual ao cadastrado, incluindo acentuação.
 
-**Body esperado:**
+Payload:
 
 ```json
 {
-  "nome": "feijao"
+  "nome": "feijão"
 }
 ```
 
@@ -423,7 +460,6 @@ Cria um novo produto (somente se o usuário for um produtor).
 ```json
 {
   "nome": "Arroz",
-  "descricao": "Arroz branco tipo 1",
   "preco": 25,
   "quantidade": 50,
   "unidade": "kg",
@@ -461,7 +497,9 @@ Atualiza um produto (somente se o produtor for o dono do produto).
 
 **Parâmetro de rota: id (ID do produto).**
 
-Body esperado (campos opcionais):
+Obrigatório enviar o id do produtor no body.
+
+Payload:
 
 ```json
 {
@@ -469,7 +507,7 @@ Body esperado (campos opcionais):
   "preco": 30,
   "quantidade": 40,
   "unidade": "kg",
-  "produtor": "66e73a1b456"
+  "produtor": "68cf0c5616f159ed69c324a1"
 }
 
 ```

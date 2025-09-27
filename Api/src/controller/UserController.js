@@ -62,7 +62,10 @@ class UserController{
     async atualizarUsuario(req, res) {
         try {
         const { id } = req.params;
-        const data = req.body;
+        const { nome, telefone, cep, role, numeroDaCasa, complemento } = req.body;
+        const data = req.body
+        console.log(data);
+        
         if(!nome || !telefone || !cep || !role || !numeroDaCasa || !complemento ){
             return res.status(400).json({ error: "Campos obrigatórios faltando." })
         }
@@ -80,7 +83,7 @@ class UserController{
         });
         } catch (error) {
         console.error("Erro ao atualizar usuário:", error.message);
-        return res.status(500).json({ message: "Erro interno ao atualizar usuário" });
+        return res.status(500).json({ message: "Erro interno ao atualizar usuário" , error: error});
         }
     }
 
