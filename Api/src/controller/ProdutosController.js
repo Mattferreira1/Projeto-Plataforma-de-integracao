@@ -174,7 +174,7 @@ class ProdutosController{
 
             <p>=================================</p>
             <p><strong>Produto:</strong> ${produto.nome}</p>
-            <p><strong>Quantidade:</strong> ${quantidade} ${produto.unidade}</p>
+            <p><strong>Quantidade:</strong> ${quantidade}</p>
             <p>=================================</p>
           `,
         });

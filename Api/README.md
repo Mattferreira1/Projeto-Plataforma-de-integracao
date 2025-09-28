@@ -1,5 +1,15 @@
 # Plataforma de Conexão entre Produtores do Mercado São Sebastião e Consumidores
 
+<!-- Esta API gerencia usuários, produtos e envia pedidos via e-mail, 
+Os usuários podem ser separador por **consumidores** ou **produtores**, e no processo de cadastro, seus endereços são preenchidos automaticamente via integração com a API do ViaCEP para evitar erros de digitação e a API resend para enviar os pedidos por email.
+
+Está api busca facilitar a visualização de produtos disponíveis e agilizar o processo de compra. -->
+
+Esta API tem como objetivo gerenciar usuários, produtos e o envio de pedidos por e-mail.
+Os usuários são classificados como consumidores ou produtores. Durante o cadastro, os endereços são preenchidos automaticamente por meio da integração com a API do ViaCEP, reduzindo erros de digitação. Além disso, a API Resend é utilizada para realizar o envio dos pedidos por e-mail.
+
+O propósito principal é facilitar a visualização dos produtos disponíveis e tornar o processo de compra mais ágil e eficiente.
+
 Integrantes da equipe:
 
 ```json
@@ -11,8 +21,6 @@ Integrantes da equipe:
 ```
 
 
-Esta API gerencia usuários, produtos e  envia pedidos via e-mail, 
-Os usuários podem ter os papéis (`role`) de **consumidor** ou **produtor**, e seus endereços são preenchidos automaticamente via integração com a API do [ViaCEP](https://viacep.com.br) para evitar erros de digitação e uma 
 
 
 ---
@@ -47,8 +55,25 @@ npm install
 npm run dev
 ```
 
+Para sair dos testes, digite:
+
+Ctrl + C
+
+E depois confirme.
 
 ## Testes
+
+1- Abrir o cmd na pasta api e digitar:
+
+```json
+npm run test
+```
+
+Para sair dos testes, digite:
+
+Ctrl + C
+
+E depois confirme.
 
 
 ##  Rotas de Usuários
@@ -552,9 +577,45 @@ Resposta (200):
 </details>
 
 
-<details>
+<!-- <details>
 <summary>
-Gerar um pedido
+Gerar um novo pedido
 </summary>
 
+</details> -->
+
+<details>
+<summary>
+Gerar um novo pedido
+</summary>
+
+POST produtos/pedidos
+
+Descrição: Processa os dados de um novo pedido, envia um e-mail de notificação para o produtor com os detalhes da compra e do cliente, e retorna uma mensagem de confirmação.
+
+Payload:
+```json
+{
+    "produtoId":"68d578c99fecdd3792fcdf35",
+    "quantidade":13,
+    "clienteId": "68cf0c4916f159ed69c3249d"
+}
+```
+
+Resposta (200 - OK):
+```json
+{
+  "message": "Pedido realizado e e-mail enviado ao produtor!"
+}
+```
+
+Possíveis erros:
+
+500 → Erro interno no servidor ao tentar processar o pedido ou enviar o e-mail.
+
+```json
+{
+  "message": "Erro ao processar pedido."
+}
+```
 </details>
