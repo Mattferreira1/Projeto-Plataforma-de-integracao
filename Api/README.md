@@ -1,10 +1,5 @@
 # Plataforma de Conexão entre Produtores do Mercado São Sebastião e Consumidores
 
-<!-- Esta API gerencia usuários, produtos e envia pedidos via e-mail, 
-Os usuários podem ser separador por **consumidores** ou **produtores**, e no processo de cadastro, seus endereços são preenchidos automaticamente via integração com a API do ViaCEP para evitar erros de digitação e a API resend para enviar os pedidos por email.
-
-Está api busca facilitar a visualização de produtos disponíveis e agilizar o processo de compra. -->
-
 Esta API tem como objetivo gerenciar usuários, produtos e o envio de pedidos por e-mail.
 Os usuários são classificados como consumidores ou produtores. Durante o cadastro, os endereços são preenchidos automaticamente por meio da integração com a API do ViaCEP, reduzindo erros de digitação. Além disso, a API Resend é utilizada para realizar o envio dos pedidos por e-mail.
 
@@ -55,7 +50,7 @@ npm install
 npm run dev
 ```
 
-Para sair dos testes, digite:
+Para fechar a aplicação, pressione:
 
 Ctrl + C
 
@@ -69,7 +64,7 @@ E depois confirme.
 npm run test
 ```
 
-Para sair dos testes, digite:
+Para sair dos testes, pressione:
 
 Ctrl + C
 
@@ -618,4 +613,5 @@ Possíveis erros:
   "message": "Erro ao processar pedido."
 }
 ```
+
 </details>
