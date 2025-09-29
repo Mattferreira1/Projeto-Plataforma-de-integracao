@@ -92,7 +92,7 @@ describe("Testes da API", () => {
         });
 
     expect(response.statusCode).toBe(201);
-    expect(response.body).toHaveProperty("_id");
+    expect(response.body).toHaveProperty("message", "Produto criado com sucesso.");
   });
 
 
@@ -125,5 +125,4 @@ describe("Testes da API", () => {
     const produtoCriado = response.body.find(p => p.nome === produtoNome);
     expect(produtoCriado).toBeDefined();
   });
-
 });

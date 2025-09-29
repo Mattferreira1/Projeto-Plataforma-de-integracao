@@ -55,13 +55,10 @@ class ProdutosController{
       }
       
       try {
-        // const produtos = await Product.find({
-        //   nome: { $regex: nome, $options: "i" } // busca parcial, case-insensitive
-        // }).populate("produtor", "nome telefone endereco"); 
         const produtos = await Product.find({
           nome: { $regex: nome, $options: "i" }
         })
-        .collation({ locale: "pt", strength: 1 }) // ignora acentos e caixa
+        .collation({ locale: "pt", strength: 1 })
         .populate("produtor", "nome telefone endereco");
     
         return res.json(produtos);
@@ -76,13 +73,9 @@ class ProdutosController{
     async deletarProduto(req, res){
       try {
         const { id } = req.params;
-        // const { produtor } = req.body; // precisa enviar o ID do produtor que está deletando
     
         const produtoDeletado = await Product.findOneAndDelete({ _id: id});
-    
-        // if (!produtoDeletado) {
-        //   return res.status(404).json({ message: "Produto não encontrado ou você não tem permissão" });
-        // }
+
     
         res.status(200).json({ message: "Produto removido com sucesso" });
       } catch (error) {
@@ -110,14 +103,12 @@ class ProdutosController{
         const { id } = req.params;
         const { nome, descricao, preco, quantidade, unidade, produtor } = req.body;
 
-        // Verifica se o produtor que está tentando atualizar é o dono do produto
         const produto = await Product.findOne({ _id: id, produtor });
 
         if (!produto) {
           return res.status(404).json({ message: "Produto não encontrado ou você não tem permissão" });
         }
 
-        // Atualiza somente os campos enviados
         if (nome) produto.nome = nome;
         if (descricao) produto.descricao = descricao;
         if (preco) produto.preco = preco;
@@ -140,25 +131,21 @@ class ProdutosController{
           return res.status(400).json({ message: "Dados incompletos." });
         }
 
-        // Busca produto
         const produto = await Product.findById(produtoId).populate("produtor");
         if (!produto) {
           return res.status(404).json({ message: "Produto não encontrado." });
         }
 
-        // Busca cliente
         const cliente = await User.findById(clienteId);
         if (!cliente) {
           return res.status(404).json({ message: "Cliente não encontrado." });
         }
 
-        // Produtor do produto
         const produtor = produto.produtor;
         if (!produtor || !produtor.email) {
           return res.status(400).json({ message: "Produtor inválido." });
         }
 
-        // Envia email ao produtor
         await resend.emails.send({
           from: "onboarding@resend.dev",
           to: produtor.email,

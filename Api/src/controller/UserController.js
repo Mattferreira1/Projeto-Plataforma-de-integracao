@@ -14,7 +14,6 @@ class UserController{
                 return res.status(400).json({ error: "Role inválida." });
             }
 
-            // Consulta o ViaCEP
             const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
             const endereco = await response.json();
 
@@ -49,7 +48,6 @@ class UserController{
 
     async ListarUsuarios(req, res) {
         try {
-        // const usuarios = await User.find();
         const usuarios = await User.find().select("_id nome email telefone role endereco");
         return res.status(200).json(usuarios);
         } catch (error) {
@@ -156,9 +154,6 @@ class UserController{
             const produtos = await Product.find({ produtor: id }).select("_id nome preco");
 
             res.status(200).json({ produtor, produtos });
-            // const produtores = await User.findById(id).select("_id nome email telefone role endereco").populate("Produtos");
-
-            // res.status(200).json(produtores);
         } catch (error) {
             console.error("Erro ao listar produtores:", error.message);
             res.status(500).json({ message: "Erro interno ao buscar produtores" });
