@@ -22,7 +22,6 @@ describe("Testes da API", () => {
       useUnifiedTopology: true,
     });
 
-    // Criar um produtor para associar aos produtos
     produtor = await User.create({
         nome: `Produtor Teste ${Date.now()}`,
         email: `produtor${Date.now()}@email.com`,
@@ -126,4 +125,5 @@ describe("Testes da API", () => {
     const produtoCriado = response.body.find(p => p.nome === produtoNome);
     expect(produtoCriado).toBeDefined();
   });
+
 });
